@@ -16,6 +16,9 @@ FIND_LIBRARY(Rabbitmqc_LIBRARY
 SET(Rabbitmqc_PROCESS_INCLUDES Rabbitmqc_INCLUDE_DIR)
 SET(Rabbitmqc_PROCESS_LIBS Rabbitmqc_LIBRARY)
 
+message(STATUS "Rabbitmqc_DIR: ${Rabbitmqc_DIR}")
+message(STATUS "Rabbitmqc_PROCESS_LIBS: ${Rabbitmqc_PROCESS_LIBS}")
+
 LIBFIND_PROCESS(Rabbitmqc)
 
 find_file(_Rabbitmqc_SSL_HEADER

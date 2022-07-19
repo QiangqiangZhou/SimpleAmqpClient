@@ -5,6 +5,13 @@
 # and then issuing `yum install cmake3` on the command line.
 cmake_minimum_required(VERSION 3.5)
 
+message(STATUS "VCPKG_DIR: $ENV{VCPKG_DIR}")
+if(DEFINED ENV{VCPKG_DIR} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+	set(CMAKE_TOOLCHAIN_FILE $ENV{VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake CACHE STRING "")
+endif()
+message(STATUS "CMAKE_TOOLCHAIN_FILE: ${CMAKE_TOOLCHAIN_FILE}")
+#include(c:/work/code/vcpkg/scripts/buildsystems/vcpkg.cmake)
+
 project(SimpleAmqpClient LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 98)
@@ -52,9 +59,17 @@ find_package(Boost COMPONENTS chrono system REQUIRED) # boost >= 1.47.0
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 
+message(STATUS "CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Modules)
-find_package(rabbitmq-c REQUIRED)
+find_package(rabbitmq-c CONFIG REQUIRED)
+message(STATUS "Rabbitmqc_INCLUDE_DIRS: ${Rabbitmqc_INCLUDE_DIRS}")
+if (WIN32)
+  set(Rabbitmqc_INCLUDE_DIRS $ENV{VCPKG_DIR}/packages/librabbitmq_x64-windows/include) 
+  set(Rabbitmqc_LIBRARY $ENV{VCPKG_DIR}/packages/librabbitmq_x64-windows/lib/librabbitmq.4.lib)
+endif()
 INCLUDE_DIRECTORIES(SYSTEM ${Rabbitmqc_INCLUDE_DIRS})
+message(STATUS "Rabbitmqc_INCLUDE_DIRS: ${Rabbitmqc_INCLUDE_DIRS}")
+message(STATUS "Rabbitmqc_LIBRARY: ${Rabbitmqc_LIBRARY}")
 
 option(ENABLE_SSL_SUPPORT "Enable SSL support." ${Rabbitmqc_SSL_ENABLED})
 
